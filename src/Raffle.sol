@@ -8,7 +8,19 @@ pragma solidity ^0.8.18;
  * @notice  This contract is for creating a sample raffle
  */
 contract Raffle {
-    function enterRaffle() public {}
+    uint256 private immutable ENTRANCE_FEE;
+
+    constructor(uint256 entranceFee) {
+        ENTRANCE_FEE = entranceFee;
+    }
+
+    function enterRaffle() public payable {}
 
     function pickWinner() public {}
+
+    /* Getter Functions */
+
+    function getEntranceFee() external view returns (uint256) {
+        return ENTRANCE_FEE;
+    }
 }
