@@ -8,13 +8,18 @@ pragma solidity ^0.8.18;
  * @notice  This contract is for creating a sample raffle
  */
 contract Raffle {
+    /* Errors */
+    error Raffle__NotEnoughEthSent();
+
     uint256 private immutable ENTRANCE_FEE;
 
     constructor(uint256 entranceFee) {
         ENTRANCE_FEE = entranceFee;
     }
 
-    function enterRaffle() public payable {}
+    function enterRaffle() external payable {
+        if (msg.value < i_entranceFee) revert Raffle__NotEnoughEthSent();
+    }
 
     function pickWinner() public {}
 
