@@ -1,13 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
+import {VRFConsumerBaseV2Plus} from "@chainlink/contracts/src/v0.8/vrf/dev/VRFConsumerBaseV2Plus.sol";
+
 /**
  * @author  0xGaladhrim
  * @title   A sample Raffle contract
  * @dev     Implements Chainlink VRFv2.5
  * @notice  This contract is for creating a sample raffle
  */
-contract Raffle {
+contract Raffle is VRFConsumerBaseV2Plus {
     /* Events */
     event EnteredRaffle(address indexed player);
 
@@ -19,7 +21,7 @@ contract Raffle {
     address payable[] private s_players;
     uint256 private s_lastTimeStamp;
 
-    constructor(uint256 entranceFee, uint256 interval) {
+    constructor(uint256 entranceFee, uint256 interval, address vrfCoordinator) VRFConsumerBaseV2Plus(vrfCoordinator) {
         ENTRANCE_FEE = entranceFee;
         INTERVAL = inteval;
         s_lastTimeStamp = block.timestamp;
@@ -39,6 +41,19 @@ contract Raffle {
     function pickWinner() public {
         // check to see if enough times has passed
         if ((block.timestamp - s_lastTimeStamp) < INTERVAL) revert();
+
+        requestId = s_vrfCoordinator.requestRandomWords(
+            VRFV2PlusClient.RandomWordsRequest({
+                keyHash: keyHash,
+                subId: s_subscriptionId,
+                requestConfirmations: requestConfirmations,
+                callbackGasLimit: callbackGasLimit,
+                numWords: numWords,
+                extraArgs: VRFV2PlusClient._argsToBytes(
+                    VRFV2PlusClient.ExtraArgsV1({nativePayment: enableNativePayment})
+                )
+            })
+        );
     }
 
     /* Getter Functions */
