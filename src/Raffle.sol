@@ -93,12 +93,21 @@ contract Raffle is VRFConsumerBaseV2Plus {
         bool hasPlayers = _players.length > 0;
         bool hasBalance = address(this).balance > 0;
         upkeepNeeded = (timePassed && isOpen && hasBalance && hasPlayers);
-        return (upkeepNeeded, "0x0");
+        return (upkeepNeeded, "");
     }
 
-    function pickWinner() public {
-        // check to see if enough times has passed
-        if ((block.timestamp - _lastTimeStamp) < INTERVAL) revert();
+    // 1. Get a random number
+    // 2. Use the random number to pick a player
+    // 3. Automatically called
+    function performUpkeep(
+        bytes calldata /* performData */
+    )
+        external
+    {
+        // check to see if checkUpKeep returns true
+        (bool upkeepNeeded,) = checkUpkeep("");
+        if (!upkeepNeeded) revert();
+
         // change raffle state to calculating when picking winner
         _raffleState = RaffleState.CALCULATING;
 
