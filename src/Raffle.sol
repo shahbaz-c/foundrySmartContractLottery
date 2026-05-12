@@ -18,6 +18,13 @@ contract Raffle is VRFConsumerBaseV2Plus {
     error Raffle__NotEnoughEthSent();
     error Raffle__TransferFailed();
 
+    // Type declarations
+    enum RaffleState {
+        OPEN, // 0
+        CALCULATING // 1
+    }
+
+    RaffleState private _raffleState;
     uint16 private constant REQUEST_CONFIRMATIONS = 3;
     uint32 private constant NUM_WORDS = 1;
     uint256 private immutable ENTRANCE_FEE;
@@ -43,6 +50,7 @@ contract Raffle is VRFConsumerBaseV2Plus {
         KEY_HASH = gasLane;
         SUBSCRIPTION_ID = subscriptionId;
         CALLBACK_GAS_LIMIT = callbackGasLimit;
+        _raffleState = RaffleState.OPEN;
     }
 
     function enterRaffle() external payable {
