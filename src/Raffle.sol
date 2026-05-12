@@ -17,6 +17,7 @@ contract Raffle is VRFConsumerBaseV2Plus {
     /* Errors */
     error Raffle__NotEnoughEthSent();
     error Raffle__TransferFailed();
+    error Raffle__RaffleNotOpen();
 
     // Type declarations
     enum RaffleState {
@@ -56,6 +57,8 @@ contract Raffle is VRFConsumerBaseV2Plus {
     function enterRaffle() external payable {
         // validate to ensure user value is not less than required entrance fee
         if (msg.value < ENTRANCE_FEE) revert Raffle__NotEnoughEthSent();
+        // validate to ensure raffle ticket cannot be bought when raffle state is calculating
+        if (_raffleState != RaffleState.OPEN) revert Raffle__RaffleNotOpen();
 
         // add user address to s_players to track registration
         _players.push(payable(msg.sender));
@@ -67,6 +70,8 @@ contract Raffle is VRFConsumerBaseV2Plus {
     function pickWinner() public {
         // check to see if enough times has passed
         if ((block.timestamp - _lastTimeStamp) < INTERVAL) revert();
+        // change raffle state to calculating when picking winner
+        _raffleState = RaffleState.CALCULATING;
 
         uint256 requestId = s_vrfCoordinator.requestRandomWords(
             VRFV2PlusClient.RandomWordsRequest({
@@ -86,6 +91,8 @@ contract Raffle is VRFConsumerBaseV2Plus {
 
         // store most recent winner in state
         _recentWinner = recentWinner;
+        // reopen raffle after winner has been picked
+        _raffleState = RaffleState.OPEN;
         // pay recent winner
         (bool success,) = recentWinner.call{value: address(this).balance}("");
         if (!success) revert Raffle__TransferFailed();
