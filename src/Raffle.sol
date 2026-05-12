@@ -13,6 +13,7 @@ import {VRFV2PlusClient} from "@chainlink/contracts/src/v0.8/vrf/dev/libraries/V
 contract Raffle is VRFConsumerBaseV2Plus {
     /* Events */
     event EnteredRaffle(address indexed player);
+    event PickedWinner(address winner);
 
     /* Errors */
     error Raffle__NotEnoughEthSent();
@@ -93,9 +94,18 @@ contract Raffle is VRFConsumerBaseV2Plus {
         _recentWinner = recentWinner;
         // reopen raffle after winner has been picked
         _raffleState = RaffleState.OPEN;
+
         // pay recent winner
         (bool success,) = recentWinner.call{value: address(this).balance}("");
         if (!success) revert Raffle__TransferFailed();
+
+        // intialise new empty array over existing array
+        _players = new address payable[](0);
+        // update timestamp
+        _lastTimeStamp = block.timestamp;
+
+        // emit event
+        emit PickedWinner(recentWinner);
     }
 
     /* Getter Functions */
