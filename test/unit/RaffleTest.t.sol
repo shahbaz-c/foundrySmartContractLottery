@@ -56,6 +56,15 @@ contract RaffleTest is Test {
         raffle.enterRaffle();
     }
 
+    function testRaffleWorksWithEnoughEth() public {
+        // Arrange
+        vm.prank(player);
+        // Act
+        raffle.enterRaffle{value: entranceFee}();
+        // Assert
+        assertEq(raffle.getPlayer(0), player, "player should be recorded when paying entrance fee");
+    }
+
     function testRaffleRecordsPlayersWhenTheyEnter() public {
         // Arrange
         vm.prank(player);
