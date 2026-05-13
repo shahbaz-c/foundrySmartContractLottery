@@ -43,4 +43,14 @@ contract RaffleTest is Test {
             "raffleState on initialisation should be OPEN"
         );
     }
+
+    /*** ENTER RAFFLE ***/
+
+    function testRaffleRevertsWhenYouDontPayEnough() public {
+        // Arrange
+        vm.prank(player);
+        // Act/Assert
+        vm.expectRevert(Raffle.Raffle__NotEnoughEthSent.selector);
+        raffle.enterRaffle();
+    }
 }
