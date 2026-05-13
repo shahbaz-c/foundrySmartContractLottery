@@ -10,7 +10,7 @@ contract DeployRaffle is Script {
         deployContract();
     }
 
-    function deployContract() internal returns (Raffle, HelperConfig) {
+    function deployContract() public returns (Raffle, HelperConfig) {
         HelperConfig helperConfig = new HelperConfig();
         HelperConfig.NetworkConfig memory config = helperConfig.getConfig();
 
