@@ -34,6 +34,13 @@ contract RaffleTest is Test {
     }
 
     function testRaffleInitialisesInOpenState() public view {
-        assert(raffle.getRaffleState() == Raffle.RaffleState.OPEN);
+        // this works
+        // assert(raffle.getRaffleState() == Raffle.RaffleState.OPEN);
+        // but better to use assertEq - more informative if something fails
+        assertEq(
+            uint256(raffle.getRaffleState()),
+            uint256(Raffle.RaffleState.OPEN),
+            "raffleState on initialisation should be OPEN"
+        );
     }
 }
