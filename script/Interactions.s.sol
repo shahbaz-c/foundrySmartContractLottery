@@ -31,6 +31,7 @@ contract CreateSubscription is Script {
     }
 }
 
+<<<<<<< HEAD
 contract FundSubscription is Script {
     uint256 public constant FUND_AMOUNT = 3 ether;
 
@@ -48,3 +49,5 @@ contract FundSubscription is Script {
         fundSubscriptionUsingConfig();
     }
 }
+=======
+>>>>>>> b4a934d705bb725ef442cbee53802f086542411b
