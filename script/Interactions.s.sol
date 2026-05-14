@@ -30,3 +30,4 @@ contract CreateSubscription is Script {
         createSubscriptionUsingConfig();
     }
 }
+
