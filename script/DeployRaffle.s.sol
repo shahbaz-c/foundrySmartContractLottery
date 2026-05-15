@@ -37,6 +37,9 @@ contract DeployRaffle is Script {
         );
         vm.stopBroadcast();
 
+        AddConsumer newAddConsumer = new AddConsumer();
+        newAddConsumer.addConsumer(address(raffle), config.vrfCoordinator, config.subscriptionId);
+
         return (raffle, helperConfig);
     }
 }
