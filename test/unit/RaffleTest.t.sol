@@ -115,4 +115,19 @@ contract RaffleTest is Test {
         // Assert
         assertEq(upkeepNeeded, false, "upkeep should be false when raffle has no balance");
     }
+
+    function testCheckUpkeepReturnsFalseIfRaffleIsNotOpen() public {
+        // Arrange
+        vm.prank(player);
+        raffle.enterRaffle{value: entranceFee}();
+        vm.warp(block.timestamp + interval + 1);
+        vm.roll(block.number + 1);
+        raffle.performUpkeep("");
+
+        // Act
+        (bool upkeepNeeded,) = raffle.checkUpkeep("");
+
+        // Assert
+        assertEq(upkeepNeeded, false, "upkeep should be false when raffle is not open");
+    }
 }
