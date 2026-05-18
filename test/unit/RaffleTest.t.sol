@@ -156,4 +156,17 @@ contract RaffleTest is Test {
         // Assert
         assertEq(upkeepNeeded, true, "upkeep should be true if all four parameters are good");
     }
+
+    /***** PERFORM UPKEEP *****/
+
+    function testPerformUpkeepCanOnlyRunIfCheckUpkeepIsTrue() public {
+        // Arrange
+        vm.prank(player);
+        raffle.enterRaffle{value: entranceFee}();
+        vm.warp(block.timestamp + interval + 1);
+        vm.roll(block.number + 1);
+
+        // Act/Assert
+        raffle.performUpkeep("");
+    }
 }
